@@ -200,5 +200,4 @@ def test_zoom_ratio_with_limits_out_of_range():
 
 
 if __name__ == "__main__":
-    setup_module(None)
     test_zoom_ratio()
