@@ -1,22 +1,25 @@
 # -*- coding: utf-8 -*-
 """
-DEPRECATED:  The classes below are convenience classes that create a new window
-containting a single, specific widget. These classes are now unnecessary because
-it is possible to place any widget into its own window by simply calling its
-show() method.
+graphicsWindows.py -  Convenience classes which create a new window with PlotWidget or ImageView.
+Copyright 2010  Luke Campagnola
+Distributed under MIT/X11 license. See license.txt for more information.
 """
 
-from .Qt import QtCore, QtGui, mkQApp
+from .Qt import QtCore, QtGui
 from .widgets.PlotWidget import *
 from .imageview import *
 from .widgets.GraphicsLayoutWidget import GraphicsLayoutWidget
 from .widgets.GraphicsView import GraphicsView
+QAPP = None
+
+def mkQApp():
+    if QtGui.QApplication.instance() is None:
+        global QAPP
+        QAPP = QtGui.QApplication([])
 
 
 class GraphicsWindow(GraphicsLayoutWidget):
     """
-    (deprecated; use GraphicsLayoutWidget instead)
-    
     Convenience subclass of :class:`GraphicsLayoutWidget 
     <pyqtgraph.GraphicsLayoutWidget>`. This class is intended for use from 
     the interactive python prompt.
@@ -31,9 +34,6 @@ class GraphicsWindow(GraphicsLayoutWidget):
         
 
 class TabWindow(QtGui.QMainWindow):
-    """
-    (deprecated)
-    """
     def __init__(self, title=None, size=(800,600)):
         mkQApp()
         QtGui.QMainWindow.__init__(self)
@@ -45,13 +45,13 @@ class TabWindow(QtGui.QMainWindow):
         self.show()
         
     def __getattr__(self, attr):
-        return getattr(self.cw, attr)
+        if hasattr(self.cw, attr):
+            return getattr(self.cw, attr)
+        else:
+            raise NameError(attr)
     
 
 class PlotWindow(PlotWidget):
-    """
-    (deprecated; use PlotWidget instead)
-    """
     def __init__(self, title=None, **kargs):
         mkQApp()
         self.win = QtGui.QMainWindow()
@@ -65,9 +65,6 @@ class PlotWindow(PlotWidget):
 
 
 class ImageWindow(ImageView):
-    """
-    (deprecated; use ImageView instead)
-    """
     def __init__(self, *args, **kargs):
         mkQApp()
         self.win = QtGui.QMainWindow()
